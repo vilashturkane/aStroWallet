@@ -115,7 +115,7 @@ export function SendTab({ target }: { target: DashTarget }) {
           <Label htmlFor="send-memo">Memo (optional)</Label>
           <Input
             id="send-memo"
-            placeholder="e.g. chai ke liye ☕"
+            placeholder="e.g. payment for coffee ☕"
             value={memo}
             onChange={(e) => setMemo(e.target.value)}
           />

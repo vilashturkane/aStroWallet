@@ -36,17 +36,17 @@ const STEPS = [
   {
     icon: ImageIcon,
     title: "1 · Upload to IPFS",
-    desc: "Token ki image aur metadata JSON Pinata pe pin hoti hai — server-side, credentials kabhi browser me nahi aate.",
+    desc: "The token image and metadata JSON are pinned to Pinata / IPFS server-side — credentials never reach the browser.",
   },
   {
     icon: FileCode2,
     title: "2 · Deploy contract",
-    desc: "Uploaded WASM se ek naya SEP-41 token contract instance deploy hota hai — Rust me likha, unit-tested.",
+    desc: "A new SEP-41 token contract instance is deployed from the uploaded WASM — written in Rust, fully unit-tested.",
   },
   {
     icon: Sparkles,
     title: "3 · Supply minted",
-    desc: "Constructor same transaction me poori supply tumhare wallet me mint kar deta hai. Done. 🎉",
+    desc: "The constructor mints the full supply to your wallet in the same transaction. Done. 🎉",
   },
 ];
 
@@ -141,7 +141,7 @@ export default function Home() {
           Everything a web3 wallet needs
         </h2>
         <p className="mt-2 text-center text-muted-foreground">
-          Connect karo, explore karo, mint karo — sab kuch testnet pe.
+          Connect, explore, and mint — all on testnet.
         </p>
         <div className="mt-9 grid gap-4 md:grid-cols-3">
           {/* Connect — opens the wallet modal directly */}
@@ -155,7 +155,7 @@ export default function Home() {
                 "Freighter · xBull · Albedo · Lobstr · Hana",
                 "One-click via Stellar Wallets Kit modal",
                 "Keys stay in YOUR wallet — non-custodial",
-                "Connect hote hi dashboard khul jaata hai",
+                "Dashboard opens instantly once connected",
               ]}
             />
             <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-foreground">
@@ -334,7 +334,7 @@ export default function Home() {
           How token minting works
         </h2>
         <p className="mt-2 text-center text-muted-foreground">
-          Solana ke SPL token jaisa — lekin Stellar pe, Soroban smart contract ke saath.
+          Just like SPL tokens on Solana — but on Stellar, powered by Soroban smart contracts.
         </p>
         <div className="mt-8 grid gap-4 md:grid-cols-3">
           {STEPS.map((s) => (

@@ -12,7 +12,7 @@ export default function DashboardPage() {
       <div className="pt-2">
         <h1 className="font-display text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="mt-1.5 text-muted-foreground">
-          Balances, tokens, NFTs, activity aur payments — sab ek jagah.
+          Balances, tokens, NFTs, activity and payments — all in one place.
         </p>
       </div>
       <Dashboard />

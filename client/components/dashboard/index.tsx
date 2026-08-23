@@ -32,9 +32,9 @@ export function Dashboard() {
       <Card className="animate-fade-up">
         <CardContent className="py-14 text-center">
           <div className="mb-3 text-5xl">📊</div>
-          <p className="font-display text-lg font-bold">Koi account selected nahi hai</p>
+          <p className="font-display text-lg font-bold">No account selected</p>
           <p className="mx-auto mt-1.5 max-w-sm text-sm text-muted-foreground">
-            Wallet connect karo — phir uska dashboard yahan khulega.
+            Connect your wallet — your dashboard will load here.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <ConnectWalletButton />

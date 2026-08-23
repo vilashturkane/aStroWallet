@@ -60,13 +60,13 @@ export function NftsTab({ balances }: { balances: HorizonBalance[] }) {
         <div className="mb-3 text-4xl">🖼</div>
         No NFTs detected on this account (<b>{network.toUpperCase()}</b>).
         <div className="mx-auto mt-4 max-w-md space-y-1.5 text-left text-[12.5px] leading-relaxed">
-          <p className="font-bold text-foreground">NFT nahi dikh raha? Check karo:</p>
-          <p>🔁 <b>Network</b> — NFTs mainnet pe hain toh upar se Mainnet select karo</p>
+          <p className="font-bold text-foreground">NFT not showing up? Check the following:</p>
+          <p>🔁 <b>Network</b> — if your NFTs are on mainnet, switch to Mainnet above</p>
           <p>
-            🧱 <b>Soroban NFTs</b> — smart-contract wale NFTs Horizon balances me nahi aate; abhi
-            sirf classic-asset NFTs dikhte hain (trustline balance ≤ 1)
+            🧱 <b>Soroban NFTs</b> — smart-contract NFTs do not appear in Horizon balances; only
+            classic-asset NFTs are shown (trustline balance ≤ 1)
           </p>
-          <p>📍 <b>Address</b> — wahi account kholo jisme NFT hold hai</p>
+          <p>📍 <b>Address</b> — open the account that actually holds the NFT</p>
         </div>
       </div>
     );
@@ -79,8 +79,7 @@ export function NftsTab({ balances }: { balances: HorizonBalance[] }) {
         ))}
       </div>
       <p className="mt-3 text-[11.5px] text-muted-foreground">
-        ℹ️ Sirf classic-asset NFTs (balance ≤ 1) dikhte hain — Soroban contract NFTs Horizon me
-        visible nahi hote.
+        ℹ️ Only classic-asset NFTs (balance ≤ 1) are shown — Soroban contract NFTs are not visible via Horizon.
       </p>
     </>
   );

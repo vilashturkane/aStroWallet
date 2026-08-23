@@ -12,8 +12,8 @@ export default function MintPage() {
       <div className="pt-2">
         <h1 className="font-display text-3xl font-bold tracking-tight">Mint Token</h1>
         <p className="mt-1.5 text-muted-foreground">
-          SPL-token jaisa experience — Soroban smart contract deploy hota hai aur poori supply
-          tumhare wallet me aa jaati hai, ek hi transaction me.
+          SPL-token style experience — a Soroban smart contract is deployed and the full supply
+          is minted to your wallet in a single transaction.
         </p>
       </div>
       <MintTokenCard />

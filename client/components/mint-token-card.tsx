@@ -45,7 +45,7 @@ export function MintTokenCard() {
 
   async function handleMint() {
     if (!connected) {
-      toast({ title: "Pehle wallet connect karo", variant: "destructive" });
+      toast({ title: "Please connect your wallet first", variant: "destructive" });
       return;
     }
     if (!WASM_HASH) {
@@ -124,10 +124,9 @@ export function MintTokenCard() {
       <Card className="animate-fade-up">
         <CardContent className="py-14 text-center">
           <div className="mb-3 text-5xl">🪙</div>
-          <p className="font-display text-lg font-bold">Wallet connect karo pehle</p>
+          <p className="font-display text-lg font-bold">Connect your wallet first</p>
           <p className="mx-auto mt-1.5 max-w-sm text-sm text-muted-foreground">
-            Token mint karne ke liye ek signing wallet chahiye — Freighter, xBull, Albedo
-            waghera.
+            A signing wallet is required to mint tokens — Freighter, xBull, Albedo, and more.
           </p>
           <ConnectWalletButton className="mt-6" />
         </CardContent>
@@ -143,8 +142,8 @@ export function MintTokenCard() {
           <Badge variant="gold">{network.toUpperCase()}</Badge>
         </CardTitle>
         <CardDescription>
-          SPL-token jaisa — Soroban smart contract deploy hota hai aur poori supply tumhare
-          connected wallet me mint ho jaati hai, ek hi transaction me.
+          A Soroban smart contract is deployed and the full supply is minted to your connected
+          wallet in a single transaction.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -201,7 +200,7 @@ export function MintTokenCard() {
               {file ? (
                 <span className="font-medium text-foreground">{file.name}</span>
               ) : (
-                "PNG / JPG / GIF · max 5 MB — Pinata (IPFS) pe upload hogi"
+                "PNG / JPG / GIF · max 5 MB — will be uploaded to Pinata (IPFS)"
               )}
             </div>
             <input
@@ -220,7 +219,7 @@ export function MintTokenCard() {
         </Button>
 
         <p className="text-xs text-muted-foreground">
-          💡 Account funded hona chahiye — dashboard me Friendbot se free test XLM le lo.
+          💡 Your account must be funded — get free test XLM via Friendbot on the dashboard.
         </p>
 
         {result && (
