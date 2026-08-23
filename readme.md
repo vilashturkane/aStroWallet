@@ -1,5 +1,9 @@
 # 🚀 aStroWallet
 
+> **Developed by [Vilash Turkane](https://github.com/vilashturkane)**
+
+🌐 **Live App:** [https://a-stro-wallet.vercel.app/](https://a-stro-wallet.vercel.app/)
+
 A full-stack, non-custodial **Stellar** web wallet — generate keys, connect wallets, explore tokens & NFTs, and **mint your own Soroban tokens** (like SPL tokens on Solana) with IPFS images via Pinata.
 
 Built with Next.js 15 · Bun · Rust (Soroban) · Stellar Wallets Kit · Tailwind.
