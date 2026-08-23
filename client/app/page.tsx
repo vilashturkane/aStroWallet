@@ -298,6 +298,67 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ---------- Contract Details ---------- */}
+      <section className="py-14">
+        <div className="mb-8 text-center">
+          <Badge variant="gold" className="mb-4 px-3 py-1 text-xs">
+            📄 On-Chain Contract
+          </Badge>
+          <h2 className="font-display text-3xl font-bold tracking-tight">
+            aStroToken — SEP-41 Contract
+          </h2>
+          <p className="mt-3 text-muted-foreground">
+            The deployed Soroban token contract powering every token minted via aStroWallet.
+          </p>
+        </div>
+        <div className="mb-6 rounded-lg border border-border bg-card p-6 font-mono text-sm">
+          <p className="mb-1 font-sans text-xs text-muted-foreground">Testnet WASM Hash</p>
+          <p className="break-all text-gold-deep">
+            a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d
+          </p>
+          <div className="mt-3 flex flex-wrap gap-4 font-sans text-xs text-muted-foreground">
+            <span>Network: <strong className="text-foreground">Stellar Testnet</strong></span>
+            <span>Standard: <strong className="text-foreground">SEP-41</strong></span>
+            <span>Language: <strong className="text-foreground">Rust (no_std)</strong></span>
+            <span>SDK: <strong className="text-foreground">soroban-sdk v23</strong></span>
+            <span>TTL: <strong className="text-foreground">~90 days (auto-bumped)</strong></span>
+          </div>
+        </div>
+        <div className="overflow-x-auto rounded-lg border border-border">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-border bg-muted/50">
+                <th className="px-4 py-3 text-left font-semibold">Function</th>
+                <th className="px-4 py-3 text-left font-semibold">Access</th>
+                <th className="px-4 py-3 text-left font-semibold">Description</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border text-[13px] text-muted-foreground">
+              {[
+                { fn: "constructor(...)", access: "Deploy-time", desc: "Init metadata + mint full supply to admin in one transaction" },
+                { fn: "transfer(from, to, amount)", access: "Token holder", desc: "Transfer tokens between accounts" },
+                { fn: "approve(from, spender, amount)", access: "Token holder", desc: "Approve a spender allowance with expiry ledger" },
+                { fn: "transfer_from(spender, from, to)", access: "Spender", desc: "Transfer on behalf of an approved account" },
+                { fn: "burn(from, amount)", access: "Token holder", desc: "Permanently destroy tokens" },
+                { fn: "mint(to, amount)", access: "Admin only 🔒", desc: "Mint additional tokens after initial deploy" },
+                { fn: "set_admin(new_admin)", access: "Admin only 🔒", desc: "Transfer admin role to a new address" },
+                { fn: "balance(id)", access: "Public", desc: "Query token balance of any address" },
+                { fn: "allowance(from, spender)", access: "Public", desc: "Query approved spending allowance" },
+                { fn: "total_supply()", access: "Public", desc: "Get total circulating token supply" },
+                { fn: "token_uri()", access: "Public", desc: "IPFS metadata URI — Metaplex-style JSON" },
+                { fn: "decimals() / name() / symbol()", access: "Public", desc: "Standard SEP-41 token metadata" },
+              ].map((row) => (
+                <tr key={row.fn} className="hover:bg-muted/30">
+                  <td className="px-4 py-3 font-mono text-[12px] text-foreground">{row.fn}</td>
+                  <td className="px-4 py-3">{row.access}</td>
+                  <td className="px-4 py-3">{row.desc}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
       {/* ---------- Soroban & Rust ---------- */}
       <section className="rounded-lg border border-border bg-gradient-to-b from-lilac/10 to-transparent p-8 sm:p-10">
         <div className="mb-8 text-center">
