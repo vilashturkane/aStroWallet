@@ -17,6 +17,7 @@ import {
   Activity,
   Cpu,
   Terminal,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -396,6 +397,46 @@ export default function Home() {
             </ul>
           </div>
         </div>
+      </section>
+
+      {/* ---------- Security ---------- */}
+      <section className="rounded-lg border border-border bg-gradient-to-b from-emerald-500/5 to-transparent p-8 sm:p-10">
+        <div className="mb-8 text-center">
+          <Badge variant="gold" className="mb-4 px-3 py-1 text-xs">
+            🔒 Security First
+          </Badge>
+          <h2 className="font-display text-3xl font-bold tracking-tight">Security & Trust Model</h2>
+          <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+            aStroWallet is non-custodial by design. Here’s exactly what lives where — no surprises.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-lg border border-border bg-card p-6">
+            <Lock className="mb-3 h-6 w-6 text-emerald-500" />
+            <h3 className="font-display font-bold">Your Keys, Your Crypto</h3>
+            <ul className="mt-3 space-y-2 text-[13.5px] text-muted-foreground">
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Secret keys live only in your browser (localStorage) — never sent to any server</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> BIP-39 mnemonic phrases generated locally, never transmitted</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Signing happens inside your wallet extension (Freighter, xBull, etc.)</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Watch-only mode — add a public key to explore without any signing risk</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Disconnect clears all local state instantly</li>
+            </ul>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-6">
+            <ShieldCheck className="mb-3 h-6 w-6 text-emerald-500" />
+            <h3 className="font-display font-bold">API & Transaction Safety</h3>
+            <ul className="mt-3 space-y-2 text-[13.5px] text-muted-foreground">
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Pinata JWT lives server-side only — never in browser bundles or client logs</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> All Soroban transactions simulated before signing — exact fee + state diff shown</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> No telemetry, no analytics, no key logging of any kind</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> Fully open source — audit every line on GitHub</li>
+              <li className="flex gap-2"><span className="text-emerald-500">✓</span> SEP-0005 key derivation verified against official Stellar test vectors</li>
+            </ul>
+          </div>
+        </div>
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          ⚠️ This is a learning / demo project running on <strong>Testnet</strong>. Please audit the contract before using with real funds on mainnet.
+        </p>
       </section>
 
       {/* ---------- Tech ---------- */}
