@@ -18,6 +18,8 @@ import {
   Cpu,
   Terminal,
   Lock,
+  Star,
+  GitFork,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -270,6 +272,59 @@ export default function Home() {
               before signing any transaction.
             </p>
           </div>
+        </div>
+      </section>
+
+      {/* ---------- Contribute ---------- */}
+      <section className="py-14 text-center">
+        <Badge variant="gold" className="mb-5 px-3 py-1 text-xs">
+          🤝 Open Source
+        </Badge>
+        <h2 className="font-display text-3xl font-bold tracking-tight">Contribute on GitHub</h2>
+        <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+          aStroWallet is fully open source. Fork it, explore the Soroban contract, improve the UI,
+          or build your own Stellar dApp on top of it.
+        </p>
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Button asChild variant="gold" size="lg">
+            <a
+              href="https://github.com/vilashturkane/aStroWallet"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Github /> View on GitHub
+            </a>
+          </Button>
+          <Button asChild variant="ghost" size="lg">
+            <a
+              href="https://github.com/vilashturkane/aStroWallet/fork"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GitFork /> Fork the Repo
+            </a>
+          </Button>
+          <Button asChild variant="ghost" size="lg">
+            <a
+              href="https://github.com/vilashturkane/aStroWallet/stargazers"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Star /> Star it
+            </a>
+          </Button>
+        </div>
+        <div className="mx-auto mt-8 grid max-w-2xl gap-3 text-left sm:grid-cols-3">
+          {[
+            { dir: "client/", desc: "Next.js 15 app — pages, components, API routes, and all wallet connection logic" },
+            { dir: "contract/", desc: "Rust Soroban token contract — SEP-41, unit-tested with snapshots, WASM-ready" },
+            { dir: "script/", desc: "Build + deploy shell script — compiles WASM and uploads it to Stellar testnet" },
+          ].map((r) => (
+            <div key={r.dir} className="rounded-lg border border-border bg-card p-4">
+              <code className="font-mono text-sm font-bold text-gold-deep">{r.dir}</code>
+              <p className="mt-1.5 text-[13px] text-muted-foreground">{r.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
