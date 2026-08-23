@@ -12,6 +12,8 @@ import {
   LayoutDashboard,
   ImageIcon,
   FileCode2,
+  Github,
+  ExternalLink,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -85,6 +87,35 @@ export default function Home() {
             </Link>
           </Button>
         </div>
+        <p className="mt-5 text-[13.5px] text-muted-foreground">
+          Built by{" "}
+          <a
+            href="https://github.com/vilashturkane"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-foreground underline-offset-4 hover:underline"
+          >
+            Vilash Turkane
+          </a>
+          {" · "}
+          <a
+            href="https://github.com/vilashturkane/aStroWallet"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-semibold text-foreground underline-offset-4 hover:underline"
+          >
+            <Github className="h-3.5 w-3.5" /> GitHub Repo
+          </a>
+          {" · "}
+          <a
+            href="https://a-stro-wallet.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-semibold text-gold-deep underline-offset-4 hover:underline"
+          >
+            <ExternalLink className="h-3.5 w-3.5" /> Live App
+          </a>
+        </p>
       </section>
 
       {/* ---------- Stats ---------- */}
