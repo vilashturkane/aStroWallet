@@ -8,6 +8,44 @@ A full-stack, non-custodial **Stellar** web wallet — generate keys, connect wa
 
 Built with Next.js 15 · Bun · Rust (Soroban) · Stellar Wallets Kit · Tailwind.
 
+## 📄 Smart Contract
+
+The aStroWallet token contract (`astro-token`) is a **SEP-41** compatible fungible token built with **Rust / Soroban SDK v23** for the Stellar network.
+
+| Property | Value |
+|---|---|
+| **Contract Name** | `astro-token` |
+| **Standard** | SEP-41 (Soroban Token Interface) |
+| **Language** | Rust (`#![no_std]`, compiled to WASM) |
+| **SDK** | `soroban-sdk` v23 |
+| **Testnet WASM Hash** | `a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d` |
+| **Network** | Stellar Testnet (Soroban RPC) |
+
+### Contract Interface
+
+| Function | Access | Description |
+|---|---|---|
+| `constructor(admin, decimal, name, symbol, uri, initial_supply)` | Deploy-time | Initializes token and mints full supply to admin |
+| `transfer(from, to, amount)` | Token holder | Transfer tokens between accounts |
+| `approve(from, spender, amount, expiration_ledger)` | Token holder | Approve a spender allowance |
+| `transfer_from(spender, from, to, amount)` | Approved spender | Transfer on behalf of another account |
+| `burn(from, amount)` | Token holder | Burn (destroy) tokens |
+| `balance(id)` | Public | Query token balance |
+| `allowance(from, spender)` | Public | Query approved allowance |
+| `mint(to, amount)` | Admin only | Mint additional tokens |
+| `set_admin(new_admin)` | Admin only | Transfer admin role |
+| `total_supply()` | Public | Get total token supply |
+| `token_uri()` | Public | Get IPFS metadata URI (Metaplex-style) |
+| `decimals()` / `name()` / `symbol()` | Public | Token metadata |
+
+### TTL (Time-to-Live) Config
+
+- **Instance TTL:** ~90 days (`17280 ledgers/day × 90`)
+- **Balance TTL:** ~90 days per entry
+- Entries are bumped automatically on each interaction to prevent expiry
+
+---
+
 ## 📁 Structure
 
 ```
