@@ -15,6 +15,8 @@ import {
   Github,
   ExternalLink,
   Activity,
+  Cpu,
+  Terminal,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -293,6 +295,45 @@ export default function Home() {
               <Coins /> Mint your first token
             </Link>
           </Button>
+        </div>
+      </section>
+
+      {/* ---------- Soroban & Rust ---------- */}
+      <section className="rounded-lg border border-border bg-gradient-to-b from-lilac/10 to-transparent p-8 sm:p-10">
+        <div className="mb-8 text-center">
+          <Badge variant="gold" className="mb-4 px-3 py-1 text-xs">
+            ⚙️ Smart Contracts
+          </Badge>
+          <h2 className="font-display text-3xl font-bold tracking-tight">Soroban · Rust · WASM</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
+            Soroban is Stellar’s native smart contract platform. Contracts are written in{" "}
+            <strong>Rust</strong>, compiled to <strong>WebAssembly (WASM)</strong>, and executed in
+            a deterministic, resource-metered sandbox on every validator.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="rounded-lg border border-border bg-card p-6">
+            <Cpu className="mb-3 h-6 w-6 text-lilac" />
+            <h3 className="font-display font-bold">Why Rust?</h3>
+            <ul className="mt-3 space-y-2 text-[13.5px] text-muted-foreground">
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> Memory-safe without a garbage collector — no runtime panics from null pointers</li>
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> Zero-cost abstractions keep the compiled WASM binary tiny</li>
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> <code className="font-mono text-xs">#![no_std]</code> — no standard library overhead inside contracts</li>
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> Ownership model prevents double-spend bugs at compile time</li>
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> Soroban SDK v23 provides all contract primitives natively</li>
+            </ul>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-6">
+            <Terminal className="mb-3 h-6 w-6 text-lilac" />
+            <h3 className="font-display font-bold">How Soroban Works</h3>
+            <ul className="mt-3 space-y-2 text-[13.5px] text-muted-foreground">
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> Write contract in Rust → compile to <code className="font-mono text-xs">.wasm</code> via Cargo</li>
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> Upload WASM to Stellar network → get a unique WASM hash</li>
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> Deploy an instance from the hash → get a contract address (<code className="font-mono text-xs">C...</code>)</li>
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> Simulate first → see exact resource fees and state diff before signing</li>
+              <li className="flex gap-2"><span className="text-gold-deep">❖</span> TTL (time-to-live) keeps contract storage alive on-chain automatically</li>
+            </ul>
+          </div>
         </div>
       </section>
 
