@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Stellar brand palette — warm white / black / gold / lilac */
+    --background: 60 25% 99%;        /* #fdfdfb */
+    --foreground: 0 0% 6%;           /* #0f0f0f Stellar black */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 6%;
+    --border: 45 22% 88%;            /* #e7e5db */
+    --input: 45 22% 88%;
+    --primary: 50 98% 57%;           /* #FDDA24 Stellar gold */
+    --primary-foreground: 0 0% 6%;
+    --secondary: 246 89% 67%;        /* #6F5FF6 Stellar lilac */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 47 28% 95%;             /* #f6f5ef */
+    --muted-foreground: 50 4% 41%;   /* #6d6c64 */
+    --accent: 47 28% 95%;
+    --accent-foreground: 0 0% 6%;
+    --destructive: 4 74% 49%;        /* #d92d20 */
+    --destructive-foreground: 0 0% 100%;
+    --ring: 46 100% 27%;             /* deep gold */
+    --radius: 0.875rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(700px 340px at 80% -10%, rgba(253, 218, 36, 0.18), transparent),
+      radial-gradient(700px 340px at 10% -10%, rgba(111, 95, 246, 0.1), transparent);
+    background-repeat: no-repeat;
+  }
+}

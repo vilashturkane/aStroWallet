@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>aStroWallet — Stellar Web Wallet</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/11.3.0/stellar-sdk.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@stellar/freighter-api@6.0.1/build/index.min.js"></script>
+<style>
+  :root {
+    /* Stellar brand palette — gold / black / warm white / lilac */
+    --bg: #fdfdfb;
+    --card: #ffffff;
+    --card-2: #f6f5ef;
+    --border: #e7e5db;
+    --text: #0f0f0f;           /* Stellar black */
+    --muted: #6d6c64;
+    --accent: #fdda24;         /* Stellar gold */
+    --accent-deep: #8a6d00;    /* readable gold for text on light bg */
+    --accent-2: #6f5ff6;       /* Stellar lilac */
+    --danger: #d92d20;
+    --success: #12805c;
+    --radius: 14px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(700px 340px at 80% -10%, rgba(253,218,36,.18), transparent),
+      radial-gradient(700px 340px at 10% -10%, rgba(111,95,246,.10), transparent);
+  }
+  h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+  .container { max-width: 980px; margin: 0 auto; padding: 24px 20px 80px; }
+
+  /* ---------- Header ---------- */
+  header { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 28px; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand .logo { font-size: 30px; }
+  .brand h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+  .brand .ver {
+    font-size: 11px; color: #0f0f0f; background: var(--accent);
+    padding: 2px 8px; border-radius: 999px; font-weight: 700; align-self: flex-start; margin-top: 4px;
+  }
+  .net-switch { display: flex; gap: 6px; background: var(--card); border: 1px solid var(--border); border-radius: 999px; padding: 4px; }
+  .net-switch button {
+    background: transparent; color: var(--muted); border: 0; padding: 6px 16px;
+    border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; transition: .15s;
+  }
+  .net-switch button.active { background: var(--accent); color: #0f0f0f; }
+
+  /* ---------- Generic ---------- */
+  .card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; margin-bottom: 20px;
+  }
+  .card h2 { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+  .card .sub { color: var(--muted); font-size: 13.5px; margin-bottom: 16px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--text); color: #fff; border: 0; padding: 10px 18px;
+    border-radius: 999px; font-size: 14px; font-weight: 700; cursor: pointer; transition: .15s;
+  }
+  .btn:hover { opacity: .85; transform: translateY(-1px); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+  .btn.gold { background: var(--accent); color: #0f0f0f; }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  .btn.ghost:hover { border-color: var(--muted); }
+  .btn.danger { background: var(--danger); color: #fff; }
+  .btn.sm { padding: 7px 12px; font-size: 12.5px; }
+  input[type="text"], input[type="password"], input[type="number"] {
+    width: 100%; background: var(--card-2); border: 1px solid var(--border); color: var(--text);
+    padding: 12px 14px; border-radius: 10px; font-size: 14px; outline: none; transition: .15s;
+    font-family: inherit;
+  }
+  input:focus { border-color: var(--accent); }
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .hidden { display: none !important; }
+  .muted { color: var(--muted); }
+
+  /* ---------- Landing ---------- */
+  #landing { text-align: center; padding: 60px 0 40px; }
+  #landing .hero-emoji { font-size: 64px; margin-bottom: 16px; display: block; }
+  #landing h1 { font-size: clamp(30px, 5vw, 46px); font-weight: 800; letter-spacing: -1px; line-height: 1.15; }
+  #landing h1 .grad {
+    background: linear-gradient(90deg, #c79a00, #e08700, var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  #landing p { color: var(--muted); margin: 14px 0 30px; font-size: 16px; }
+  #landing .choices { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .chain-btn {
+    background: var(--card); border: 1px solid var(--border); color: var(--text);
+    padding: 16px 34px; border-radius: var(--radius); font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: .15s; display: flex; align-items: center; gap: 10px;
+  }
+  .chain-btn:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .chain-btn small { display: block; font-weight: 500; color: var(--muted); font-size: 12px; }
+
+  /* ---------- Mnemonic ---------- */
+  .phrase-box {
+    background: var(--card-2); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; margin-top: 14px; cursor: pointer; transition: .15s;
+  }
+  .phrase-box:hover { border-color: var(--accent); }
+  .phrase-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  @media (max-width: 640px) { .phrase-grid { grid-template-columns: repeat(3, 1fr); } }
+  .word {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; font-size: 14px; display: flex; gap: 8px; align-items: baseline;
+  }
+  .word .idx { color: var(--muted); font-size: 11px; }
+  .phrase-hint { color: var(--muted); font-size: 12.5px; margin-top: 12px; display: flex; align-items: center; gap: 6px; }
+  .blurred .word span:last-child { filter: blur(5px); }
+
+  /* ---------- Wallet cards ---------- */
+  .wallet-card {
+    background: var(--card-2); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-top: 14px; overflow: hidden;
+  }
+  .wallet-card .wc-head {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+  }
+  .wallet-card .wc-head h3 { font-size: 16px; font-weight: 700; }
+  .wallet-card .wc-body { padding: 16px 20px; }
+  .kv { margin-bottom: 14px; }
+  .kv label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; font-weight: 700; }
+  .kv .val {
+    display: flex; align-items: center; gap: 8px; background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px;
+    font-size: 13px; word-break: break-all; cursor: pointer; transition: .15s;
+  }
+  .kv .val:hover { border-color: var(--accent); }
+  .icon-btn { background: transparent; border: 0; color: var(--muted); cursor: pointer; font-size: 15px; padding: 4px; flex-shrink: 0; }
+  .icon-btn:hover { color: var(--text); }
+
+  /* ---------- Dashboard ---------- */
+  .balance-hero {
+    text-align: center; padding: 26px 16px;
+    background: linear-gradient(180deg, rgba(253,218,36,.18), transparent);
+    border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 18px;
+  }
+  .balance-hero .amt { font-size: 42px; font-weight: 800; letter-spacing: -1px; font-family: 'Space Grotesk', sans-serif; }
+  .balance-hero .amt span { font-size: 20px; color: var(--accent-deep); }
+  .balance-hero .addr { color: var(--muted); font-size: 12.5px; margin-top: 6px; cursor: pointer; }
+  .balance-hero .addr:hover { color: var(--text); }
+  .tabs { display: flex; gap: 6px; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .tabs button {
+    background: transparent; border: 0; color: var(--muted); padding: 10px 16px;
+    font-size: 14px; font-weight: 700; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px;
+  }
+  .tabs button.active { color: var(--text); border-bottom-color: var(--accent); }
+  .asset-row {
+    display: flex; align-items: center; gap: 14px; padding: 13px 14px;
+    background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px;
+  }
+  .asset-icon {
+    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; color: #0f0f0f;
+  }
+  .asset-row .info { flex: 1; min-width: 0; }
+  .asset-row .info .code { font-weight: 700; font-size: 14.5px; }
+  .asset-row .info .issuer { color: var(--muted); font-size: 11.5px; word-break: break-all; }
+  .asset-row .bal { font-weight: 700; font-size: 15px; text-align: right; }
+  .asset-row .bal small { display: block; color: var(--muted); font-weight: 500; }
+  .nft-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+  .nft-card { background: var(--card-2); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .nft-card .art { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+  .nft-card .meta { padding: 10px 12px; }
+  .nft-card .meta .code { font-weight: 700; font-size: 13.5px; }
+  .nft-card .meta .issuer { color: var(--muted); font-size: 10.5px; word-break: break-all; margin-top: 2px; }
+  .tx-row {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+    border-bottom: 1px solid var(--border); font-size: 13.5px;
+  }
+  .tx-row:last-child { border-bottom: 0; }
+  .tx-row .dir { font-size: 18px; }
+  .tx-row .desc { flex: 1; min-width: 0; }
+  .tx-row .desc .cp { color: var(--muted); font-size: 11.5px; word-break: break-all; }
+  .tx-amt.in { color: var(--success); font-weight: 700; }
+  .tx-amt.out { color: var(--danger); font-weight: 700; }
+  .empty { text-align: center; color: var(--muted); padding: 34px 10px; font-size: 14px; }
+  .empty .big { font-size: 36px; display: block; margin-bottom: 10px; }
+
+  /* ---------- Toast ---------- */
+  #toasts { position: fixed; bottom: 22px; right: 22px; display: flex; flex-direction: column; gap: 10px; z-index: 999; }
+  .toast {
+    background: var(--card); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    color: var(--text); padding: 12px 18px; border-radius: 10px; font-size: 13.5px;
+    box-shadow: 0 10px 34px rgba(15,15,15,.14); animation: slideIn .25s ease; max-width: 340px;
+  }
+  .toast.error { border-left-color: var(--danger); }
+  .toast.success { border-left-color: var(--success); }
+  @keyframes slideIn { from { transform: translateX(30px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+  .spinner {
+    width: 16px; height: 16px; border: 2px solid rgba(0,0,0,.25); border-top-color: #0f0f0f;
+    border-radius: 50%; animation: spin .7s linear infinite; display: inline-block;
+  }
+  .spinner.light { border-color: rgba(15,15,15,.12); border-top-color: var(--accent-deep); width: 26px; height: 26px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding-top: 30px; }
+  footer b { color: var(--text); }
+  .badge { font-size: 10.5px; background: var(--card-2); border: 1px solid var(--border); color: var(--muted); padding: 3px 8px; border-radius: 999px; font-weight: 600; }
+  .badge.gold { color: #0f0f0f; background: rgba(253,218,36,.35); border-color: rgba(253,218,36,.6); }
+
+  /* ---------- Send form ---------- */
+  .send-grid { display: grid; grid-template-columns: 1fr 160px; gap: 10px; }
+  @media (max-width: 640px) { .send-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ======================= HEADER ======================= -->
+  <header>
+    <div class="brand">
+      <span class="logo">🚀</span>
+      <h1>aStroWallet</h1>
+      <span class="ver">v1.0</span>
+    </div>
+    <div class="net-switch" id="netSwitch">
+      <button data-net="testnet" class="active">Testnet</button>
+      <button data-net="mainnet">Mainnet</button>
+    </div>
+  </header>
+
+  <!-- ======================= LANDING ======================= -->
+  <section id="landing">
+    <span class="hero-emoji">✨</span>
+    <h1>aStroWallet supports the<br><span class="grad">Stellar blockchain</span></h1>
+    <p>Generate keys, connect your wallet & explore your tokens and NFTs — all in your browser.</p>
+    <div class="choices">
+      <button class="chain-btn" id="startBtn">
+        🌟 <span>Stellar<small>XLM · SEP-0005 · Soroban</small></span>
+      </button>
+      <button class="chain-btn" id="connectHeroBtn">
+        🔗 <span>Connect Wallet<small>Freighter · Watch-only</small></span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ======================= MAIN APP ======================= -->
+  <main id="app" class="hidden">
+
+    <!-- ---- Secret phrase ---- -->
+    <div class="card" id="mnemonicCard">
+      <h2>Secret Recovery Phrase</h2>
+      <p class="sub">Save these words in a safe place. This phrase controls all your derived Stellar accounts.</p>
+
+      <div id="mnemonicInputWrap">
+        <div class="row">
+          <input type="text" id="mnemonicInput" placeholder="Enter your secret phrase (or leave blank to generate a new one)" style="flex:1; min-width: 240px;">
+          <button class="btn gold" id="generateBtn">Generate Wallet</button>
+        </div>
+      </div>
+
+      <div id="phraseWrap" class="hidden">
+        <div class="phrase-box" id="phraseBox" title="Click anywhere to copy">
+          <div class="phrase-grid" id="phraseGrid"></div>
+          <div class="phrase-hint">📋 Click anywhere on this card to copy your phrase</div>
+        </div>
+        <div class="row" style="margin-top: 12px;">
+          <button class="btn ghost sm" id="togglePhraseBtn">👁 Show / Hide</button>
+          <button class="btn danger sm" id="wipeBtn">🗑 Delete phrase & wallets</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- Wallets ---- -->
+    <div class="card hidden" id="walletsCard">
+      <div class="row" style="justify-content: space-between;">
+        <div>
+          <h2>Stellar Wallets</h2>
+          <p class="sub" style="margin-bottom:0;">Derived via <span class="mono">m/44'/148'/i'</span> (SEP-0005)</p>
+        </div>
+        <div class="row">
+          <button class="btn gold sm" id="addWalletBtn">+ Add Wallet</button>
+          <button class="btn danger sm" id="clearWalletsBtn">Clear Wallets</button>
+        </div>
+      </div>
+      <div id="walletList"></div>
+    </div>
+
+    <!-- ---- Connect ---- -->
+    <div class="card" id="connectCard">
+      <h2>Connect a Wallet</h2>
+      <p class="sub">Connect the Freighter browser extension, or watch any Stellar address.</p>
+      <div class="row">
+        <button class="btn" id="freighterBtn">🛸 Connect Freighter</button>
+        <input type="text" id="watchInput" placeholder="G... paste any Stellar public key" style="flex:1; min-width: 240px;" class="mono">
+        <button class="btn ghost" id="watchBtn">👀 Watch</button>
+      </div>
+    </div>
+
+    <!-- ---- Dashboard ---- -->
+    <div class="card hidden" id="dashCard">
+      <div class="row" style="justify-content: space-between; margin-bottom: 14px;">
+        <h2 id="dashTitle">Dashboard</h2>
+        <div class="row">
+          <span class="badge gold" id="dashNetBadge">TESTNET</span>
+          <button class="btn ghost sm" id="refreshBtn">⟳ Refresh</button>
+          <button class="btn ghost sm" id="closeDashBtn">✕ Close</button>
+        </div>
+      </div>
+
+      <div class="balance-hero">
+        <div id="dashLoading"><span class="spinner light"></span></div>
+        <div id="dashBalWrap" class="hidden">
+          <div class="amt" id="xlmBalance">0 <span>XLM</span></div>
+          <div class="addr mono" id="dashAddr" title="Click to copy"></div>
+        </div>
+        <div id="dashUnfunded" class="hidden">
+          <div class="amt">💤</div>
+          <p class="muted" style="margin: 8px 0 14px;">This account is not funded yet (needs min 1 XLM reserve).</p>
+          <button class="btn gold sm" id="friendbotBtn">💧 Fund with Friendbot (testnet)</button>
+        </div>
+      </div>
+
+      <div class="tabs" id="dashTabs">
+        <button data-tab="tokens" class="active">💰 Tokens</button>
+        <button data-tab="nfts">🖼 NFTs</button>
+        <button data-tab="activity">📜 Activity</button>
+        <button data-tab="send" id="sendTabBtn">✈️ Send</button>
+      </div>
+
+      <div id="tab-tokens"></div>
+      <div id="tab-nfts" class="hidden"></div>
+      <div id="tab-activity" class="hidden"></div>
+      <div id="tab-send" class="hidden">
+        <p class="sub">Send XLM from this wallet. Transaction is built, signed locally & submitted to Horizon.</p>
+        <div class="kv">
+          <label>Destination address</label>
+          <input type="text" id="sendDest" class="mono" placeholder="G...">
+        </div>
+        <div class="send-grid">
+          <div class="kv">
+            <label>Memo (optional)</label>
+            <input type="text" id="sendMemo" placeholder="e.g. chai ke liye ☕">
+          </div>
+          <div class="kv">
+            <label>Amount (XLM)</label>
+            <input type="number" id="sendAmount" placeholder="0.0" min="0" step="any">
+          </div>
+        </div>
+        <button class="btn gold" id="sendBtn">🚀 Sign & Send</button>
+        <p class="muted" style="font-size:12px; margin-top:10px;" id="sendNote"></p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    Designed & Developed for <b>Stellar</b> · aStroWallet 🚀 · <span class="mono" style="font-size:11px;">non-custodial · keys never leave your browser</span>
+  </footer>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* =====================================================================
+   aStroWallet — hardcoded single-file Stellar web wallet
+   - BIP-39 mnemonic (Web Crypto)  - SEP-0005 derivation m/44'/148'/i'
+   - Horizon REST for balances / payments / NFTs
+   - Freighter connect + watch-only
+   ===================================================================== */
+
+const HORIZON = {
+  testnet: 'https://horizon-testnet.stellar.org',
+  mainnet: 'https://horizon.stellar.org',
+};
+const PASSPHRASE = {
+  testnet: 'Test SDF Network ; September 2015',
+  mainnet: 'Public Global Stellar Network ; September 2015',
+};
+const WORDLIST_URL = 'https://cdn.jsdelivr.net/npm/bip39@3.1.0/src/wordlists/english.json';
+
+const state = {
+  network: localStorage.getItem('astro_network') || 'testnet',
+  mnemonic: localStorage.getItem('astro_mnemonic') || null,
+  wallets: JSON.parse(localStorage.getItem('astro_wallets') || '[]'), // {index, publicKey, secret}
+  wordlist: null,
+  dash: null,   // { publicKey, secret|null, label }
+  phraseHidden: true,
+};
+
+const $ = (id) => document.getElementById(id);
+const short = (s, n = 6) => s ? s.slice(0, n) + '…' + s.slice(-n) : '';
+const fmt = (n) => Number(n).toLocaleString('en-US', { maximumFractionDigits: 7 });
+
+/* ---------------- Toasts ---------------- */
+function toast(msg, type = '') {
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  $('toasts').appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = '.3s'; setTimeout(() => el.remove(), 320); }, 3200);
+}
+async function copyText(text, label = 'Copied') {
+  try { await navigator.clipboard.writeText(text); toast(label + ' to clipboard ✅', 'success'); }
+  catch { toast('Copy failed', 'error'); }
+}
+
+/* ---------------- BIP-39 (Web Crypto) ---------------- */
+async function loadWordlist() {
+  if (state.wordlist) return state.wordlist;
+  const res = await fetch(WORDLIST_URL);
+  state.wordlist = await res.json();
+  return state.wordlist;
+}
+async function sha256(bytes) { return new Uint8Array(await crypto.subtle.digest('SHA-256', bytes)); }
+const toBits = (bytes) => [...bytes].map(b => b.toString(2).padStart(8, '0')).join('');
+
+async function generateMnemonic() {
+  const wl = await loadWordlist();
+  const entropy = crypto.getRandomValues(new Uint8Array(16)); // 128 bits → 12 words
+  const cs = toBits(await sha256(entropy)).slice(0, 4);
+  const bits = toBits(entropy) + cs;
+  const words = [];
+  for (let i = 0; i < bits.length; i += 11) words.push(wl[parseInt(bits.slice(i, i + 11), 2)]);
+  return words.join(' ');
+}
+async function validateMnemonic(m) {
+  const wl = await loadWordlist();
+  const words = m.trim().toLowerCase().split(/\s+/);
+  if (![12, 15, 18, 21, 24].includes(words.length)) return false;
+  const idxs = words.map(w => wl.indexOf(w));
+  if (idxs.includes(-1)) return false;
+  const bits = idxs.map(i => i.toString(2).padStart(11, '0')).join('');
+  const entBits = (words.length * 11 * 32) / 33;
+  const entropy = new Uint8Array(entBits / 8);
+  for (let i = 0; i < entropy.length; i++) entropy[i] = parseInt(bits.slice(i * 8, i * 8 + 8), 2);
+  const expected = toBits(await sha256(entropy)).slice(0, bits.length - entBits);
+  return bits.slice(entBits) === expected;
+}
+async function mnemonicToSeed(mnemonic) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(mnemonic.normalize('NFKD')), 'PBKDF2', false, ['deriveBits']);
+  const bits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: enc.encode('mnemonic'), iterations: 2048, hash: 'SHA-512' }, key, 512);
+  return new Uint8Array(bits);
+}
+
+/* ---------------- SLIP-0010 ed25519 → SEP-0005 ---------------- */
+async function hmacSha512(keyBytes, data) {
+  const key = await crypto.subtle.importKey('raw', keyBytes, { name: 'HMAC', hash: 'SHA-512' }, false, ['sign']);
+  return new Uint8Array(await crypto.subtle.sign('HMAC', key, data));
+}
+async function deriveStellarKey(seed, accountIndex) {
+  // path: m/44'/148'/accountIndex'  (all hardened)
+  let I = await hmacSha512(new TextEncoder().encode('ed25519 seed'), seed);
+  let key = I.slice(0, 32), chain = I.slice(32);
+  for (const idx of [44, 148, accountIndex]) {
+    const data = new Uint8Array(37);
+    data.set(key, 1);
+    const i = (idx + 0x80000000) >>> 0;
+    data[33] = (i >>> 24) & 0xff; data[34] = (i >>> 16) & 0xff; data[35] = (i >>> 8) & 0xff; data[36] = i & 0xff;
+    I = await hmacSha512(chain, data);
+    key = I.slice(0, 32); chain = I.slice(32);
+  }
+  return key; // 32-byte raw ed25519 seed
+}
+function keypairFromRawSeed(raw) {
+  const secret = StellarSdk.StrKey.encodeEd25519SecretSeed(raw);
+  return StellarSdk.Keypair.fromSecret(secret);
+}
+
+/* ---------------- Persistence ---------------- */
+function persist() {
+  if (state.mnemonic) localStorage.setItem('astro_mnemonic', state.mnemonic);
+  else localStorage.removeItem('astro_mnemonic');
+  localStorage.setItem('astro_wallets', JSON.stringify(state.wallets));
+  localStorage.setItem('astro_network', state.network);
+}
+
+/* ---------------- UI: phrase & wallets ---------------- */
+function renderPhrase() {
+  if (!state.mnemonic) {
+    $('phraseWrap').classList.add('hidden');
+    $('mnemonicInputWrap').classList.remove('hidden');
+    $('walletsCard').classList.add('hidden');
+    return;
+  }
+  $('mnemonicInputWrap').classList.add('hidden');
+  $('phraseWrap').classList.remove('hidden');
+  $('walletsCard').classList.remove('hidden');
+  const grid = $('phraseGrid');
+  grid.innerHTML = '';
+  state.mnemonic.split(' ').forEach((w, i) => {
+    const d = document.createElement('div');
+    d.className = 'word';
+    d.innerHTML = `<span class="idx">${i + 1}</span><span>${w}</span>`;
+    grid.appendChild(d);
+  });
+  $('phraseBox').classList.toggle('blurred', state.phraseHidden);
+}
+function renderWallets() {
+  const list = $('walletList');
+  list.innerHTML = '';
+  if (!state.wallets.length) {
+    list.innerHTML = '<div class="empty"><span class="big">👛</span>No wallets yet — click <b>+ Add Wallet</b> to derive your first Stellar account.</div>';
+    return;
+  }
+  state.wallets.forEach((w, i) => {
+    const card = document.createElement('div');
+    card.className = 'wallet-card';
+    card.innerHTML = `
+      <div class="wc-head">
+        <h3>🌟 Wallet ${w.index + 1} <span class="badge">m/44'/148'/${w.index}'</span></h3>
+        <div class="row">
+          <button class="btn gold sm" data-act="dash">📊 Dashboard</button>
+          <button class="icon-btn" data-act="del" title="Delete wallet">🗑</button>
+        </div>
+      </div>
+      <div class="wc-body">
+        <div class="kv">
+          <label>Public Key</label>
+          <div class="val mono" data-act="copy-pub" title="Click to copy">${w.publicKey}</div>
+        </div>
+        <div class="kv" style="margin-bottom:0;">
+          <label>Secret Key</label>
+          <div class="val mono" data-act="copy-sec" title="Click to copy">
+            <span data-role="sec">${'•'.repeat(56)}</span>
+            <button class="icon-btn" data-act="toggle-sec" title="Show/Hide">👁</button>
+          </div>
+        </div>
+      </div>`;
+    card.addEventListener('click', (e) => {
+      const act = e.target.closest('[data-act]')?.dataset.act;
+      if (!act) return;
+      e.stopPropagation();
+      if (act === 'dash') openDashboard({ publicKey: w.publicKey, secret: w.secret, label: `Wallet ${w.index + 1}` });
+      if (act === 'del') { state.wallets.splice(i, 1); persist(); renderWallets(); toast('Wallet deleted', 'error'); }
+      if (act === 'copy-pub') copyText(w.publicKey, 'Public key copied');
+      if (act === 'copy-sec') copyText(w.secret, 'Secret key copied');
+      if (act === 'toggle-sec') {
+        const span = card.querySelector('[data-role="sec"]');
+        span.textContent = span.textContent.startsWith('•') ? w.secret : '•'.repeat(56);
+      }
+    });
+    list.appendChild(card);
+  });
+}
+
+/* ---------------- Wallet actions ---------------- */
+async function handleGenerate() {
+  const btn = $('generateBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Working…';
+  try {
+    const input = $('mnemonicInput').value.trim();
+    if (input) {
+      if (!(await validateMnemonic(input))) { toast('Invalid recovery phrase ❌', 'error'); return; }
+      state.mnemonic = input.toLowerCase().replace(/\s+/g, ' ');
+      toast('Phrase imported ✅', 'success');
+    } else {
+      state.mnemonic = await generateMnemonic();
+      state.phraseHidden = false;
+      toast('New secret phrase generated ✨', 'success');
+    }
+    state.wallets = [];
+    persist();
+    renderPhrase();
+    await addWallet(); // derive wallet 0 automatically
+  } catch (err) {
+    console.error(err);
+    toast('Error: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Generate Wallet';
+  }
+}
+async function addWallet() {
+  if (!state.mnemonic) return;
+  const index = state.wallets.length ? Math.max(...state.wallets.map(w => w.index)) + 1 : 0;
+  const seed = await mnemonicToSeed(state.mnemonic);
+  const raw = await deriveStellarKey(seed, index);
+  const kp = keypairFromRawSeed(raw);
+  state.wallets.push({ index, publicKey: kp.publicKey(), secret: kp.secret() });
+  persist();
+  renderWallets();
+  toast(`Wallet ${index + 1} created 🌟`, 'success');
+}
+
+/* ---------------- Freighter / watch ---------------- */
+async function connectFreighter() {
+  try {
+    const api = window.freighterApi;
+    if (!api) { toast('Freighter extension not found. Install from freighter.app', 'error'); return; }
+    if (api.isConnected) {
+      const conn = await api.isConnected();
+      const ok = typeof conn === 'boolean' ? conn : conn?.isConnected;
+      if (!ok) { toast('Freighter is not available in this browser', 'error'); return; }
+    }
+    let pub;
+    if (api.requestAccess) {
+      const r = await api.requestAccess();
+      if (r?.error) throw new Error(r.error.message || r.error);
+      pub = r?.address || r;
+    } else if (api.getPublicKey) {
+      pub = await api.getPublicKey();
+    }
+    if (!pub || typeof pub !== 'string') throw new Error('Could not read public key');
+    toast('Freighter connected 🛸', 'success');
+    openDashboard({ publicKey: pub, secret: null, label: 'Freighter' });
+  } catch (err) {
+    toast('Freighter: ' + (err.message || 'connection rejected'), 'error');
+  }
+}
+function watchAddress() {
+  const addr = $('watchInput').value.trim();
+  if (!StellarSdk.StrKey.isValidEd25519PublicKey(addr)) { toast('Invalid Stellar public key ❌', 'error'); return; }
+  openDashboard({ publicKey: addr, secret: null, label: 'Watch-only' });
+}
+
+/* ---------------- Dashboard ---------------- */
+async function openDashboard(target) {
+  state.dash = target;
+  $('dashCard').classList.remove('hidden');
+  $('dashTitle').textContent = `📊 ${target.label}`;
+  $('dashNetBadge').textContent = state.network.toUpperCase();
+  $('dashAddr').textContent = target.publicKey;
+  $('sendTabBtn').style.display = target.secret ? '' : 'none';
+  $('sendNote').textContent = target.secret ? '' : 'Watch-only / Freighter accounts cannot sign here.';
+  switchTab('tokens');
+  $('dashCard').scrollIntoView({ behavior: 'smooth' });
+  await loadDashboard();
+}
+async function loadDashboard() {
+  const { publicKey } = state.dash;
+  $('dashLoading').classList.remove('hidden');
+  $('dashBalWrap').classList.add('hidden');
+  $('dashUnfunded').classList.add('hidden');
+  ['tokens', 'nfts', 'activity'].forEach(t => $('tab-' + t).innerHTML = '');
+  try {
+    const res = await fetch(`${HORIZON[state.network]}/accounts/${publicKey}`);
+    if (res.status === 404) {
+      $('dashLoading').classList.add('hidden');
+      $('dashUnfunded').classList.remove('hidden');
+      $('friendbotBtn').style.display = state.network === 'testnet' ? '' : 'none';
+      return;
+    }
+    if (!res.ok) throw new Error('Horizon error ' + res.status);
+    const acct = await res.json();
+    state.dash.account = acct;
+
+    const native = acct.balances.find(b => b.asset_type === 'native');
+    $('xlmBalance').innerHTML = `${fmt(native.balance)} <span>XLM</span>`;
+    $('dashLoading').classList.add('hidden');
+    $('dashBalWrap').classList.remove('hidden');
+
+    renderTokens(acct.balances);
+    renderNFTs(acct.balances);
+    loadActivity(publicKey);
+  } catch (err) {
+    $('dashLoading').classList.add('hidden');
+    toast('Failed to load account: ' + err.message, 'error');
+  }
+}
+const AVATAR_COLORS = ['#fdda24', '#c9beff', '#b3e5c8', '#bfe0f5', '#ffd9a8', '#f5c6dd']; // Stellar-ish pastels, dark text stays readable
+const avatarColor = (s) => AVATAR_COLORS[[...s].reduce((a, c) => a + c.charCodeAt(0), 0) % AVATAR_COLORS.length];
+
+function isNFTLike(b) {
+  // Heuristic: classic-asset NFTs → tiny supply held (0 < balance <= 1) on a non-native asset
+  return b.asset_type !== 'native' && parseFloat(b.balance) > 0 && parseFloat(b.balance) <= 1;
+}
+function renderTokens(balances) {
+  const el = $('tab-tokens');
+  el.innerHTML = '';
+  const tokens = balances.filter(b => !isNFTLike(b) || b.asset_type === 'native');
+  balances.forEach(b => {
+    if (b.asset_type !== 'native' && isNFTLike(b)) return; // shown under NFTs
+    const code = b.asset_type === 'native' ? 'XLM' : b.asset_code;
+    const issuer = b.asset_type === 'native' ? 'Native · Stellar Lumens' : short(b.asset_issuer, 8);
+    const row = document.createElement('div');
+    row.className = 'asset-row';
+    row.innerHTML = `
+      <div class="asset-icon" style="background:${b.asset_type === 'native' ? 'var(--accent)' : avatarColor(code)}">${b.asset_type === 'native' ? '✦' : code.slice(0, 2)}</div>
+      <div class="info">
+        <div class="code">${code} ${b.asset_type === 'native' ? '<span class="badge gold">NATIVE</span>' : ''}</div>
+        <div class="issuer mono">${issuer}</div>
+      </div>
+      <div class="bal">${fmt(b.balance)}<small>${b.limit ? 'limit ' + fmt(b.limit) : '&nbsp;'}</small></div>`;
+    el.appendChild(row);
+  });
+  if (!el.children.length) el.innerHTML = '<div class="empty"><span class="big">🪙</span>No tokens found.</div>';
+}
+const IPFS_GATEWAY = 'https://ipfs.io/ipfs/';
+
+async function fetchNFTImage(issuer) {
+  // Classic Stellar NFTs (SEP-39 style) store metadata in the ISSUER account's
+  // manage_data entries — usually an `ipfshash` key (base64-encoded value).
+  try {
+    const res = await fetch(`${HORIZON[state.network]}/accounts/${issuer}`);
+    if (!res.ok) return null;
+    const acct = await res.json();
+    const data = acct.data || {};
+    const key = Object.keys(data).find(k => /ipfs|hash|url|image/i.test(k));
+    if (!key) return null;
+    const val = atob(data[key]);
+    if (/^https?:\/\//i.test(val)) return val;
+    if (/^ipfs:\/\//i.test(val)) return IPFS_GATEWAY + val.slice(7);
+    if (/^(Qm[a-zA-Z0-9]{44}|baf[a-z0-9]+)/.test(val)) return IPFS_GATEWAY + val;
+    return null;
+  } catch { return null; }
+}
+
+function renderNFTs(balances) {
+  const el = $('tab-nfts');
+  el.innerHTML = '';
+  const nfts = balances.filter(isNFTLike);
+  if (!nfts.length) {
+    el.innerHTML = `
+      <div class="empty">
+        <span class="big">🖼</span>No NFTs detected on this account (<b>${state.network.toUpperCase()}</b>).
+        <div style="text-align:left; max-width:460px; margin:18px auto 0; font-size:12.5px; line-height:1.8;">
+          <b style="color:var(--text);">NFT nahi dikh raha? Check karo:</b><br>
+          🔁 <b>Network</b> — NFTs mainnet pe hain toh upar se <b>Mainnet</b> select karo<br>
+          🧱 <b>Soroban NFTs</b> — smart-contract wale NFTs Horizon balances me nahi aate,
+          is app me abhi sirf <b>classic-asset</b> NFTs dikhte hain (trustline balance ≤ 1)<br>
+          📍 <b>Address</b> — wahi account kholo jisme NFT hold hai
+        </div>
+      </div>`;
+    return;
+  }
+  const grid = document.createElement('div');
+  grid.className = 'nft-grid';
+  const emojis = ['🌌', '🪐', '🌠', '👾', '🛰', '🌟', '🚀', '🌙'];
+  nfts.forEach((b, i) => {
+    const card = document.createElement('div');
+    card.className = 'nft-card';
+    const c1 = avatarColor(b.asset_code), c2 = avatarColor(b.asset_issuer);
+    card.innerHTML = `
+      <div class="art" style="background:linear-gradient(135deg, ${c1}33, ${c2}55)">${emojis[i % emojis.length]}</div>
+      <div class="meta">
+        <div class="code">${b.asset_code} <span class="badge">x${fmt(b.balance)}</span></div>
+        <div class="issuer mono">${short(b.asset_issuer, 8)}</div>
+      </div>`;
+    grid.appendChild(card);
+    // async: try to load the real artwork from issuer metadata (ipfshash etc.)
+    fetchNFTImage(b.asset_issuer).then(url => {
+      if (!url) return;
+      const art = card.querySelector('.art');
+      art.innerHTML = `<img src="${url}" alt="${b.asset_code}" loading="lazy"
+        style="width:100%; height:100%; object-fit:cover;"
+        onerror="this.remove()">`;
+    });
+  });
+  el.appendChild(grid);
+  el.insertAdjacentHTML('beforeend',
+    '<p class="muted" style="font-size:11.5px; margin-top:12px;">ℹ️ Sirf classic-asset NFTs (balance ≤ 1) dikhte hain — Soroban contract NFTs Horizon me visible nahi hote.</p>');
+}
+async function loadActivity(publicKey) {
+  const el = $('tab-activity');
+  el.innerHTML = '<div class="empty"><span class="spinner light"></span></div>';
+  try {
+    const res = await fetch(`${HORIZON[state.network]}/accounts/${publicKey}/payments?order=desc&limit=15`);
+    const data = await res.json();
+    const records = (data._embedded?.records || []).filter(r => ['payment', 'create_account', 'path_payment_strict_send', 'path_payment_strict_receive'].includes(r.type));
+    el.innerHTML = '';
+    if (!records.length) { el.innerHTML = '<div class="empty"><span class="big">📜</span>No payment activity yet.</div>'; return; }
+    records.forEach(r => {
+      const isCreate = r.type === 'create_account';
+      const from = isCreate ? r.funder : r.from;
+      const to = isCreate ? r.account : r.to;
+      const amount = isCreate ? r.starting_balance : r.amount;
+      const code = isCreate || r.asset_type === 'native' ? 'XLM' : r.asset_code;
+      const incoming = to === publicKey;
+      const row = document.createElement('div');
+      row.className = 'tx-row';
+      row.innerHTML = `
+        <span class="dir">${incoming ? '📥' : '📤'}</span>
+        <div class="desc">
+          <div>${isCreate ? 'Account created' : incoming ? 'Received' : 'Sent'} <span class="muted">· ${new Date(r.created_at).toLocaleString()}</span></div>
+          <div class="cp mono">${incoming ? 'from ' + short(from, 8) : 'to ' + short(to, 8)}</div>
+        </div>
+        <span class="tx-amt ${incoming ? 'in' : 'out'}">${incoming ? '+' : '−'}${fmt(amount)} ${code}</span>`;
+      el.appendChild(row);
+    });
+  } catch {
+    el.innerHTML = '<div class="empty">Failed to load activity.</div>';
+  }
+}
+
+/* ---------------- Friendbot ---------------- */
+async function fundFriendbot() {
+  const btn = $('friendbotBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Funding…';
+  try {
+    const res = await fetch(`https://friendbot.stellar.org/?addr=${encodeURIComponent(state.dash.publicKey)}`);
+    if (!res.ok) throw new Error('friendbot failed');
+    toast('Account funded with 10,000 test XLM 💧', 'success');
+    await loadDashboard();
+  } catch (err) {
+    toast('Funding failed: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '💧 Fund with Friendbot (testnet)';
+  }
+}
+
+/* ---------------- Send XLM ---------------- */
+async function sendPayment() {
+  const { publicKey, secret } = state.dash;
+  if (!secret) { toast('This account cannot sign here', 'error'); return; }
+  const dest = $('sendDest').value.trim();
+  const amount = $('sendAmount').value.trim();
+  const memo = $('sendMemo').value.trim();
+  if (!StellarSdk.StrKey.isValidEd25519PublicKey(dest)) { toast('Invalid destination address ❌', 'error'); return; }
+  if (!amount || parseFloat(amount) <= 0) { toast('Enter a valid amount', 'error'); return; }
+
+  const btn = $('sendBtn');
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Sending…';
+  try {
+    const horizon = HORIZON[state.network];
+    const acctRes = await fetch(`${horizon}/accounts/${publicKey}`);
+    if (!acctRes.ok) throw new Error('Source account not found / unfunded');
+    const acct = await acctRes.json();
+
+    const destExists = (await fetch(`${horizon}/accounts/${dest}`)).ok;
+    const source = new StellarSdk.Account(publicKey, acct.sequence);
+    const builder = new StellarSdk.TransactionBuilder(source, {
+      fee: StellarSdk.BASE_FEE,
+      networkPassphrase: PASSPHRASE[state.network],
+    });
+    builder.addOperation(destExists
+      ? StellarSdk.Operation.payment({ destination: dest, asset: StellarSdk.Asset.native(), amount })
+      : StellarSdk.Operation.createAccount({ destination: dest, startingBalance: amount }));
+    if (memo) builder.addMemo(StellarSdk.Memo.text(memo.slice(0, 28)));
+    const tx = builder.setTimeout(120).build();
+    tx.sign(StellarSdk.Keypair.fromSecret(secret));
+
+    const submit = await fetch(`${horizon}/transactions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: 'tx=' + encodeURIComponent(tx.toEnvelope().toXDR('base64')),
+    });
+    const result = await submit.json();
+    if (!submit.ok) {
+      const codes = result?.extras?.result_codes;
+      throw new Error(codes ? JSON.stringify(codes) : (result.title || 'submission failed'));
+    }
+    toast(`✅ Sent ${amount} XLM! ${destExists ? '' : '(new account created)'}`, 'success');
+    $('sendDest').value = ''; $('sendAmount').value = ''; $('sendMemo').value = '';
+    await loadDashboard();
+    switchTab('activity');
+  } catch (err) {
+    toast('Send failed: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false; btn.innerHTML = '🚀 Sign & Send';
+  }
+}
+
+/* ---------------- Tabs & wiring ---------------- */
+function switchTab(name) {
+  document.querySelectorAll('#dashTabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  ['tokens', 'nfts', 'activity', 'send'].forEach(t => $('tab-' + t).classList.toggle('hidden', t !== name));
+}
+
+function enterApp() {
+  $('landing').classList.add('hidden');
+  $('app').classList.remove('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // network switch
+  document.querySelectorAll('#netSwitch button').forEach(b => {
+    b.classList.toggle('active', b.dataset.net === state.network);
+    b.addEventListener('click', async () => {
+      state.network = b.dataset.net;
+      document.querySelectorAll('#netSwitch button').forEach(x => x.classList.toggle('active', x === b));
+      persist();
+      toast('Switched to ' + state.network.toUpperCase());
+      if (state.dash) { $('dashNetBadge').textContent = state.network.toUpperCase(); await loadDashboard(); }
+    });
+  });
+
+  $('startBtn').addEventListener('click', enterApp);
+  $('connectHeroBtn').addEventListener('click', () => { enterApp(); $('connectCard').scrollIntoView({ behavior: 'smooth' }); });
+
+  $('generateBtn').addEventListener('click', handleGenerate);
+  $('mnemonicInput').addEventListener('keydown', e => { if (e.key === 'Enter') handleGenerate(); });
+  $('phraseBox').addEventListener('click', () => copyText(state.mnemonic, 'Secret phrase copied'));
+  $('togglePhraseBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    state.phraseHidden = !state.phraseHidden;
+    $('phraseBox').classList.toggle('blurred', state.phraseHidden);
+  });
+  $('wipeBtn').addEventListener('click', () => {
+    if (!confirm('Delete secret phrase and ALL wallets from this browser?')) return;
+    state.mnemonic = null; state.wallets = [];
+    persist(); renderPhrase(); renderWallets();
+    $('dashCard').classList.add('hidden');
+    toast('Wallet data wiped 🗑', 'error');
+  });
+  $('addWalletBtn').addEventListener('click', addWallet);
+  $('clearWalletsBtn').addEventListener('click', () => {
+    if (!confirm('Clear all derived wallets?')) return;
+    state.wallets = []; persist(); renderWallets(); toast('Wallets cleared', 'error');
+  });
+
+  $('freighterBtn').addEventListener('click', connectFreighter);
+  $('watchBtn').addEventListener('click', watchAddress);
+  $('watchInput').addEventListener('keydown', e => { if (e.key === 'Enter') watchAddress(); });
+
+  $('refreshBtn').addEventListener('click', loadDashboard);
+  $('closeDashBtn').addEventListener('click', () => { $('dashCard').classList.add('hidden'); state.dash = null; });
+  $('dashAddr').addEventListener('click', () => copyText(state.dash.publicKey, 'Address copied'));
+  $('friendbotBtn').addEventListener('click', fundFriendbot);
+  $('sendBtn').addEventListener('click', sendPayment);
+  $('dashTabs').addEventListener('click', e => { const t = e.target.closest('button')?.dataset.tab; if (t) switchTab(t); });
+
+  // restore session
+  if (state.mnemonic || state.wallets.length) {
+    enterApp();
+    renderPhrase();
+    renderWallets();
+  }
+  loadWordlist().catch(() => toast('Could not load BIP-39 wordlist (offline?)', 'error'));
+});
+</script>
+</body>
+</html>
