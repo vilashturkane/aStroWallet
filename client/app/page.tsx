@@ -399,23 +399,64 @@ export default function Home() {
       </section>
 
       {/* ---------- Tech ---------- */}
-      <section className="py-14 text-center">
-        <h2 className="font-display text-xl font-bold text-muted-foreground">Built with</h2>
-        <div className="mt-4 flex flex-wrap justify-center gap-2">
+      <section className="py-14">
+        <h2 className="text-center font-display text-3xl font-bold tracking-tight">Tech Stack</h2>
+        <p className="mt-2 text-center text-muted-foreground">Every layer of aStroWallet, explained.</p>
+        <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {[
-            "Next.js 15",
-            "Bun",
-            "Rust · Soroban SDK",
-            "@stellar/stellar-sdk v14",
-            "Stellar Wallets Kit",
-            "Pinata · IPFS",
-            "Tailwind CSS",
-            "Zustand",
-            "React Query",
+            {
+              name: "Next.js 15", icon: "▲",
+              desc: "App Router, Server Components, and API routes. The /api/pinata route keeps the Pinata JWT safely server-side.",
+              color: "text-foreground",
+            },
+            {
+              name: "Rust + Soroban SDK v23", icon: "⚙️",
+              desc: "Smart contract in Rust (#![no_std]), compiled to WASM, unit-tested with 6 snapshot tests, deployed to Stellar testnet.",
+              color: "text-orange-400",
+            },
+            {
+              name: "@stellar/stellar-sdk v14", icon: "★",
+              desc: "Official JS SDK for building, simulating (prepareTransaction), and submitting Stellar + Soroban transactions.",
+              color: "text-blue-400",
+            },
+            {
+              name: "Stellar Wallets Kit", icon: "🔑",
+              desc: "Unified wallet modal supporting Freighter, xBull, Albedo, Lobstr, and Hana — one clean API for all of them.",
+              color: "text-purple-400",
+            },
+            {
+              name: "Pinata · IPFS", icon: "📌",
+              desc: "Token images and metadata JSON are pinned to IPFS server-side. The JWT never reaches the browser bundle.",
+              color: "text-pink-400",
+            },
+            {
+              name: "Bun", icon: "🥟",
+              desc: "All-in-one JS runtime, package manager, and bundler. Significantly faster cold starts than npm or yarn.",
+              color: "text-yellow-400",
+            },
+            {
+              name: "Tailwind CSS", icon: "🎨",
+              desc: "Utility-first CSS with a custom dark theme — gold + lilac accent palette, fluid responsive grid layouts.",
+              color: "text-cyan-400",
+            },
+            {
+              name: "Zustand", icon: "🐻",
+              desc: "Minimal global state for wallet connection status, public key, balances, and dashboard data across routes.",
+              color: "text-green-400",
+            },
+            {
+              name: "React Query", icon: "⚡",
+              desc: "Async data fetching with caching and background refresh for Horizon API calls — stale-while-revalidate pattern.",
+              color: "text-red-400",
+            },
           ].map((t) => (
-            <Badge key={t} className="px-3 py-1.5 text-xs">
-              {t}
-            </Badge>
+            <div key={t.name} className="rounded-lg border border-border bg-card p-5">
+              <div className="mb-2 flex items-center gap-2">
+                <span className={`text-lg ${t.color}`}>{t.icon}</span>
+                <h3 className="font-display text-sm font-bold">{t.name}</h3>
+              </div>
+              <p className="text-[13px] leading-relaxed text-muted-foreground">{t.desc}</p>
+            </div>
           ))}
         </div>
       </section>
