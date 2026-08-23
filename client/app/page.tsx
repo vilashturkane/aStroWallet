@@ -14,6 +14,7 @@ import {
   FileCode2,
   Github,
   ExternalLink,
+  Activity,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -194,6 +195,78 @@ export default function Home() {
               Open <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </span>
           </Link>
+        </div>
+      </section>
+
+      {/* ---------- About Stellar ---------- */}
+      <section className="py-14">
+        <div className="mb-8 text-center">
+          <Badge variant="gold" className="mb-4 px-3 py-1 text-xs">
+            🌐 The Network
+          </Badge>
+          <h2 className="font-display text-3xl font-bold tracking-tight">What is Stellar?</h2>
+          <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
+            Stellar is an open-source, decentralized blockchain protocol built for fast, low-cost
+            global payments and asset tokenization. Unlike proof-of-work chains, Stellar uses the{" "}
+            <strong>Stellar Consensus Protocol (SCP)</strong> — energy-efficient, with finality in
+            ~5 seconds.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-lg border border-border bg-card p-6">
+            <Activity className="mb-3 h-6 w-6 text-gold-deep" />
+            <h3 className="font-display font-bold">Stellar Consensus Protocol</h3>
+            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
+              SCP is a federated Byzantine agreement protocol. No mining, no energy waste —
+              validators agree through overlapping quorum slices, giving fast and deterministic
+              finality without a single point of control.
+            </p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-6">
+            <Zap className="mb-3 h-6 w-6 text-gold-deep" />
+            <h3 className="font-display font-bold">~5s Settlements · $0.0007 Fees</h3>
+            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
+              Transactions confirm in under 5 seconds with a base fee of 100 stroops (~$0.0007).
+              Surge pricing only kicks in under extreme load — still orders of magnitude cheaper
+              than Ethereum gas fees.
+            </p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-6">
+            <Globe className="mb-3 h-6 w-6 text-gold-deep" />
+            <h3 className="font-display font-bold">Global Anchors & Fiat Ramps</h3>
+            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
+              Anchors bridge fiat and Stellar assets via SEP-6 / SEP-24. Users deposit USD or EUR
+              and receive tokenized equivalents like USDC directly on-chain — available in 100+
+              countries.
+            </p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-6">
+            <Coins className="mb-3 h-6 w-6 text-gold-deep" />
+            <h3 className="font-display font-bold">Built-in DEX & AMM</h3>
+            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
+              Stellar has a native decentralized exchange and automated market maker at the protocol
+              level. Path payments auto-route through the best available liquidity — no external
+              DEX required.
+            </p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-6">
+            <ShieldCheck className="mb-3 h-6 w-6 text-gold-deep" />
+            <h3 className="font-display font-bold">Accounts & Trustlines</h3>
+            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
+              Every Stellar account is an Ed25519 keypair (<code className="font-mono text-xs">G...</code>{" "}
+              public / <code className="font-mono text-xs">S...</code> secret). Assets require explicit
+              trustlines — you only hold what you explicitly choose to accept.
+            </p>
+          </div>
+          <div className="rounded-lg border border-border bg-card p-6">
+            <FileCode2 className="mb-3 h-6 w-6 text-gold-deep" />
+            <h3 className="font-display font-bold">Soroban Smart Contracts</h3>
+            <p className="mt-2 text-[13.5px] leading-relaxed text-muted-foreground">
+              Stellar's smart contract layer runs Rust-compiled WASM contracts on-chain.
+              Deterministic, resource-metered, and simulation-first — you know the exact cost
+              before signing any transaction.
+            </p>
+          </div>
         </div>
       </section>
 
