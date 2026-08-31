@@ -1,19 +1,34 @@
 # 🚀 aStroWallet
 
-> **Developed by [Vilash Turkane](https://github.com/vilashturkane)**
-
-🌐 **Live App:** [https://a-stro-wallet.vercel.app/](https://a-stro-wallet.vercel.app/)
-📷 **Video Demo:** [https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view](https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view)
-
-📷 **Video Demo:** [https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view](https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view)
+[![CI/CD Pipeline](https://img.shields.io/github/actions/workflow/status/vilashturkane/aStroWallet/ci.yml?branch=main&label=CI%2FCD%20Pipeline&logo=githubactions&logoColor=white)](https://github.com/vilashturkane/aStroWallet/actions/workflows/ci.yml)
+[![Stellar](https://img.shields.io/badge/Stellar-Soroban%20Smart%20Contracts-7B36D9?logo=stellar&logoColor=white)](https://stellar.org)
+[![Rust](https://img.shields.io/badge/Rust-soroban--sdk%2023-DEA584?logo=rust&logoColor=black)](contract/src/lib.rs)
+[![Next.js](https://img.shields.io/badge/Next.js-15%20(App%20Router)-black?logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-v3-38BDF8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+[![Bun](https://img.shields.io/badge/Bun-runtime-FBF0DF?logo=bun&logoColor=black)](https://bun.sh)
+[![Stellar SDK](https://img.shields.io/badge/%40stellar%2Fstellar--sdk-14-FDDA24?logo=stellar&logoColor=black)](https://www.npmjs.com/package/@stellar/stellar-sdk)
+[![StellarWalletsKit](https://img.shields.io/badge/StellarWalletsKit-Freighter%20%C2%B7%20xBull%20%C2%B7%20Albedo%20%2B%20more-6E56CF)](https://stellarwalletskit.dev)
+[![TanStack Query](https://img.shields.io/badge/TanStack%20Query-v5-FF4154?logo=reactquery&logoColor=white)](https://tanstack.com/query)
+[![Zustand](https://img.shields.io/badge/Zustand-state-443E38?logo=react&logoColor=white)](https://zustand.docs.pmnd.rs)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?logo=vercel)](https://a-stro-wallet.vercel.app/)
+[![License](https://img.shields.io/badge/License-MIT-97CA00)](LICENSE)
 
 A full-stack, non-custodial **Stellar** web wallet — generate keys, connect wallets, explore tokens & NFTs, and **mint your own Soroban tokens** (like SPL tokens on Solana) with IPFS images via Pinata.
 
-Built with Next.js 15 · Bun · Rust (Soroban) · Stellar Wallets Kit · Tailwind.
+| | |
+|---|---|
+| 🔗 **Live App** | [a-stro-wallet.vercel.app](https://a-stro-wallet.vercel.app/) |
+| 📜 **Testnet WASM Hash** | `a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d` |
+| 👨‍💻 **Developed by** | [@vilashturkane](https://github.com/vilashturkane) |
+| 🎬 **Video Demo** | [Google Drive](https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view) |
+
+---
 
 ## 📄 Smart Contract
 
-The aStroWallet token contract (`astro-token`) is a **SEP-41** compatible fungible token built with **Rust / Soroban SDK v23** for the Stellar network.
+The `astro-token` contract is a **SEP-41** compatible fungible token built with **Rust / Soroban SDK v23** for the Stellar network. Works like an SPL token on Solana — deploy one instance per token, constructor mints the full supply to the admin in the same transaction.
 
 | Property | Value |
 |---|---|
@@ -23,29 +38,26 @@ The aStroWallet token contract (`astro-token`) is a **SEP-41** compatible fungib
 | **SDK** | `soroban-sdk` v23 |
 | **Testnet WASM Hash** | `a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d` |
 | **Network** | Stellar Testnet (Soroban RPC) |
+| **Instance TTL** | ~90 days (auto-bumped on every interaction) |
 
 ### Contract Interface
 
 | Function | Access | Description |
 |---|---|---|
-| `constructor(admin, decimal, name, symbol, uri, initial_supply)` | Deploy-time | Initializes token and mints full supply to admin |
+| `__constructor(admin, decimal, name, symbol, uri, initial_supply)` | Deploy-time | Initializes metadata and mints full supply to admin |
 | `transfer(from, to, amount)` | Token holder | Transfer tokens between accounts |
-| `approve(from, spender, amount, expiration_ledger)` | Token holder | Approve a spender allowance |
+| `approve(from, spender, amount, expiration_ledger)` | Token holder | Approve a spender allowance with expiry |
 | `transfer_from(spender, from, to, amount)` | Approved spender | Transfer on behalf of another account |
-| `burn(from, amount)` | Token holder | Burn (destroy) tokens |
-| `balance(id)` | Public | Query token balance |
-| `allowance(from, spender)` | Public | Query approved allowance |
-| `mint(to, amount)` | Admin only | Mint additional tokens |
-| `set_admin(new_admin)` | Admin only | Transfer admin role |
-| `total_supply()` | Public | Get total token supply |
-| `token_uri()` | Public | Get IPFS metadata URI (Metaplex-style) |
-| `decimals()` / `name()` / `symbol()` | Public | Token metadata |
-
-### TTL (Time-to-Live) Config
-
-- **Instance TTL:** ~90 days (`17280 ledgers/day × 90`)
-- **Balance TTL:** ~90 days per entry
-- Entries are bumped automatically on each interaction to prevent expiry
+| `burn(from, amount)` | Token holder | Permanently destroy tokens, reduces total supply |
+| `burn_from(spender, from, amount)` | Approved spender | Burn on behalf using allowance |
+| `mint(to, amount)` | Admin only 🔒 | Mint additional tokens after deploy |
+| `set_admin(new_admin)` | Admin only 🔒 | Transfer admin role to a new address |
+| `balance(id)` | Public | Query token balance of any address |
+| `allowance(from, spender)` | Public | Query approved spending allowance |
+| `total_supply()` | Public | Get total circulating supply |
+| `token_uri()` | Public | IPFS metadata URI (Metaplex-style JSON) |
+| `decimals()` / `name()` / `symbol()` | Public | Standard SEP-41 token metadata |
+| `admin()` | Public | Returns current admin address |
 
 ---
 
@@ -53,12 +65,14 @@ The aStroWallet token contract (`astro-token`) is a **SEP-41** compatible fungib
 
 ```
 aStroWallet/
-├── client/      # Next.js 15 app (UI + API routes)
-├── contract/    # Soroban token smart contract (Rust, SEP-41)
-├── script/      # Contract build & deploy script
-├── legacy/      # Old single-file HTML version
+├── .github/workflows/   # GitHub Actions CI pipeline
+├── client/              # Next.js 15 app (UI + API routes)
+├── contract/            # Soroban token smart contract (Rust, SEP-41)
+├── script/              # Contract build & deploy scripts
 └── readme.md
 ```
+
+---
 
 ## ✨ Features
 
@@ -66,12 +80,23 @@ aStroWallet/
 2. **Connect** — Stellar Wallets Kit (Freighter, xBull, Albedo, Lobstr, Hana…) or watch-only; dashboard shows XLM, tokens, classic NFTs (with IPFS artwork), payment activity & send
 3. **Mint Token** — deploy a Soroban token contract with name / symbol / supply / decimals / image; image + metadata pinned to IPFS via Pinata; full supply minted to your wallet in ONE transaction
 
-## 🛠 Prerequisites
+---
 
-- [Bun](https://bun.sh) ≥ 1.x
-- [Rust](https://rustup.rs) + `wasm32v1-none` target (for contract)
-- [Stellar CLI](https://developers.stellar.org/docs/tools/cli) — `cargo install stellar-cli`
-- [Pinata](https://pinata.cloud) account (free) — API JWT for IPFS uploads
+## 🛠 Tech Stack
+
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 15 (App Router) + TypeScript |
+| Styling | Tailwind CSS v3 |
+| Wallets | `@creit.tech/stellar-wallets-kit` — Freighter, xBull, Albedo, Lobstr, Hana + more |
+| Chain (JS) | `@stellar/stellar-sdk` v14 — Horizon + Soroban RPC |
+| Smart Contract | Rust (`#![no_std]`) + `soroban-sdk` v23, compiled to WASM |
+| IPFS | Pinata — token images + metadata JSON pinned server-side |
+| Server state | TanStack Query v5 — async fetching, caching, background refresh |
+| Client state | Zustand — wallet session, balances, dashboard data |
+| Runtime | Bun — package manager, runtime, bundler |
+
+---
 
 ## 🚀 Setup
 
@@ -92,7 +117,8 @@ Get a JWT from [Pinata → API Keys](https://app.pinata.cloud/developers/api-key
 
 ```env
 PINATA_JWT=eyJhbGciOi...
-PINATA_GATEWAY=gateway.pinata.cloud   # or your dedicated gateway
+PINATA_GATEWAY=gateway.pinata.cloud
+NEXT_PUBLIC_TOKEN_WASM_HASH=a521d37e...
 ```
 
 ### 3. Run the client
@@ -103,7 +129,9 @@ bun install
 bun run dev        # http://localhost:3000
 ```
 
-## 🪙 How minting works
+---
+
+## 🪙 How Minting Works
 
 ```
 UI form (name, symbol, supply, decimals, image)
@@ -111,93 +139,59 @@ UI form (name, symbol, supply, decimals, image)
    ├─ 1. POST /api/pinata  → image + metadata JSON pinned to IPFS (server-side, JWT safe)
    │
    └─ 2. createCustomContract op → deploys astro-token instance from uploaded WASM
-         constructor(admin, decimal, name, symbol, uri, initial_supply)
+         __constructor(admin, decimal, name, symbol, uri, initial_supply)
          → mints FULL supply to your wallet in the same tx  ✅
 ```
 
-The contract implements the **SEP-41 token interface** (`transfer`, `approve`, `burn`, `balance`…) plus `mint` (admin-only), `set_admin`, `total_supply` and `token_uri` (IPFS metadata, Metaplex-style).
+---
 
 ## 🧪 Testing
 
 ```bash
-# Contract unit tests (6 tests)
+# Contract unit tests (6 tests — transfer, mint, burn, approve, transfer_from, insufficient)
 cd contract && cargo test
 
-# SEP-0005 derivation against official test vectors
+# SEP-0005 derivation against official Stellar test vectors
 cd client && bun scripts/verify-sep5.mjs
+
+# Lint — must exit 0
+cd client && bun run lint
+
+# Type check
+cd client && bun run typecheck
 
 # Production build
 cd client && bun run build
 ```
 
-## ⚙️ CI / CD — Client-Side Linting Setup
+---
 
-The `client/` directory has a fully configured ESLint pipeline. Both `bun run lint` and `bun run build` pass with **zero errors**.
+## ⚙️ CI / CD
 
-### What was set up
+Every push and pull request to `main` runs the GitHub Actions pipeline defined in [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
 
-| Item | Detail |
+| Job | Steps |
 |---|---|
-| **ESLint version** | `eslint@^8.57.0` — compatible with Next.js 15 |
-| **Config format** | Legacy `.eslintrc.json` (stable, well-supported) |
-| **Extends** | `next/core-web-vitals` + `plugin:@typescript-eslint/recommended` |
-| **Parser** | `@typescript-eslint/parser@^6` |
-| **Plugin** | `@typescript-eslint/eslint-plugin@^6` |
-| **Lint script** | `eslint . --ext .ts,.tsx,.js,.jsx` (replaces deprecated `next lint`) |
+| **Frontend** | `bun install --frozen-lockfile` → `bun run lint` (ESLint) → `bun run typecheck` (tsc) → `bun run build` (Next.js production build) |
+| **Contract** | Rust stable toolchain + cargo cache → `cargo test` (all 6 Soroban unit tests) |
 
-### Why `next lint` was replaced
+Nothing lands on `main` broken — a lint error, type error, failed build, or failing contract test turns the pipeline red.
 
-`next lint` (deprecated in Next.js 15, removed in Next.js 16) passes legacy API flags that ESLint 10 has removed. Switching to the ESLint CLI directly (`eslint .`) is the official migration path recommended by Next.js.
+**Continuous deployment** is handled by Vercel's Git integration: every push to `main` that passes CI is automatically built and deployed to [a-stro-wallet.vercel.app](https://a-stro-wallet.vercel.app/). The smart contract deploys separately via `./script/deploy.sh` — frontend deploys never touch the chain.
 
-### Bugs fixed during lint setup
+### Deploying to Vercel
 
-| File | Issue | Fix |
-|---|---|---|
-| `components/dashboard/index.tsx` | `queryClient` imported & assigned but never used → `@typescript-eslint/no-unused-vars` error | Removed the unused `useQueryClient` import and declaration |
-| `next-env.d.ts` | Triple-slash reference flagged by `@typescript-eslint/triple-slash-reference` | Added `next-env.d.ts` to `ignorePatterns` (auto-generated file, must not be edited) |
-| `@typescript-eslint` TS version warning | Parser v6 warns on TypeScript >5.3 even though it works fine | Suppressed via `"warnOnUnsupportedTypeScriptVersion": false` in `parserOptions` |
-
-### `.eslintrc.json` rules overview
-
-```json
-{
-  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
-  "rules": {
-    "@typescript-eslint/no-explicit-any": "warn",
-    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
-    "react/react-in-jsx-scope": "off",
-    "react/no-unescaped-entities": "off"
-  }
-}
-```
-
-### Running locally
-
-```bash
-cd client
-bun install
-bun run lint        # must exit 0 — zero errors
-bun run build       # full production build check
-```
-
-### Build output (verified ✅)
-
-```
-✓ Compiled successfully
-✓ Linting and checking validity of types
-✓ Generating static pages (9/9)
-
-Route (app)        Size    First Load JS
-○ /                9.69 kB   126 kB
-○ /dashboard       16.3 kB   541 kB
-○ /mint            6.79 kB   521 kB
-```
+1. Push this repo to GitHub and import it into Vercel.
+2. Set the project's **Root Directory** to `client`.
+3. Add environment variables in Vercel dashboard: `NEXT_PUBLIC_TOKEN_WASM_HASH`, `PINATA_JWT`, `PINATA_GATEWAY`.
+4. Deploy — the contract lives on Stellar Testnet independently of the frontend host.
 
 ---
 
-## 🔒 Security notes
+## 🔒 Security
 
-- Secret keys & mnemonic live only in your browser (localStorage) — never sent to any server
-- Pinata JWT stays server-side (API route), never exposed to the browser
-- Soroban transactions are simulated (`prepareTransaction`) before signing
-- This is a learning/demo project — audit before using with real funds on mainnet
+- Secret keys & mnemonics live only in your browser (localStorage) — never sent to any server
+- Pinata JWT stays server-side (Next.js API route) — never exposed to the browser bundle
+- All Soroban transactions are simulated (`prepareTransaction`) before signing — exact fee shown upfront
+- SEP-0005 key derivation verified against official Stellar test vectors
+- This is a learning / demo project on **Testnet** — audit the contract before using with real funds on mainnet
