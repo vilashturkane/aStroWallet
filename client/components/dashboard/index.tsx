@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2, RefreshCw, X, Droplets } from "lucide-react";
 import { ConnectWalletButton } from "@/components/connect-wallet-button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,7 +18,6 @@ import { SendTab } from "./send-tab";
 
 export function Dashboard() {
   const { network, dash, setDash } = useWalletStore();
-  const queryClient = useQueryClient();
   const [funding, setFunding] = useState(false);
 
   const { data: account, isLoading, refetch } = useQuery({

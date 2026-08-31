@@ -3,6 +3,7 @@
 > **Developed by [Vilash Turkane](https://github.com/vilashturkane)**
 
 🌐 **Live App:** [https://a-stro-wallet.vercel.app/](https://a-stro-wallet.vercel.app/)
+📷 **Video Demo:** [https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view](https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view)
 
 📷 **Video Demo:** [https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view](https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view)
 
@@ -128,6 +129,71 @@ cd client && bun scripts/verify-sep5.mjs
 # Production build
 cd client && bun run build
 ```
+
+## ⚙️ CI / CD — Client-Side Linting Setup
+
+The `client/` directory has a fully configured ESLint pipeline. Both `bun run lint` and `bun run build` pass with **zero errors**.
+
+### What was set up
+
+| Item | Detail |
+|---|---|
+| **ESLint version** | `eslint@^8.57.0` — compatible with Next.js 15 |
+| **Config format** | Legacy `.eslintrc.json` (stable, well-supported) |
+| **Extends** | `next/core-web-vitals` + `plugin:@typescript-eslint/recommended` |
+| **Parser** | `@typescript-eslint/parser@^6` |
+| **Plugin** | `@typescript-eslint/eslint-plugin@^6` |
+| **Lint script** | `eslint . --ext .ts,.tsx,.js,.jsx` (replaces deprecated `next lint`) |
+
+### Why `next lint` was replaced
+
+`next lint` (deprecated in Next.js 15, removed in Next.js 16) passes legacy API flags that ESLint 10 has removed. Switching to the ESLint CLI directly (`eslint .`) is the official migration path recommended by Next.js.
+
+### Bugs fixed during lint setup
+
+| File | Issue | Fix |
+|---|---|---|
+| `components/dashboard/index.tsx` | `queryClient` imported & assigned but never used → `@typescript-eslint/no-unused-vars` error | Removed the unused `useQueryClient` import and declaration |
+| `next-env.d.ts` | Triple-slash reference flagged by `@typescript-eslint/triple-slash-reference` | Added `next-env.d.ts` to `ignorePatterns` (auto-generated file, must not be edited) |
+| `@typescript-eslint` TS version warning | Parser v6 warns on TypeScript >5.3 even though it works fine | Suppressed via `"warnOnUnsupportedTypeScriptVersion": false` in `parserOptions` |
+
+### `.eslintrc.json` rules overview
+
+```json
+{
+  "extends": ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+    "react/react-in-jsx-scope": "off",
+    "react/no-unescaped-entities": "off"
+  }
+}
+```
+
+### Running locally
+
+```bash
+cd client
+bun install
+bun run lint        # must exit 0 — zero errors
+bun run build       # full production build check
+```
+
+### Build output (verified ✅)
+
+```
+✓ Compiled successfully
+✓ Linting and checking validity of types
+✓ Generating static pages (9/9)
+
+Route (app)        Size    First Load JS
+○ /                9.69 kB   126 kB
+○ /dashboard       16.3 kB   541 kB
+○ /mint            6.79 kB   521 kB
+```
+
+---
 
 ## 🔒 Security notes
 
