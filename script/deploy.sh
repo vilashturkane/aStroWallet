@@ -19,6 +19,13 @@ CONTRACT_DIR="$ROOT/contract"
 ENV_FILE="$ROOT/client/.env.local"
 
 command -v stellar >/dev/null || { echo "❌ stellar CLI not found — install: cargo install stellar-cli"; exit 1; }
+command -v cargo  >/dev/null || { echo "❌ cargo not found — install Rust: https://rustup.rs"; exit 1; }
+
+# Ensure the wasm32v1-none target is installed (required by stellar contract build)
+if ! rustup target list --installed 2>/dev/null | grep -q "wasm32v1-none"; then
+  echo "📥 Installing wasm32v1-none target..."
+  rustup target add wasm32v1-none
+fi
 
 echo "🔨 Building contract..."
 cd "$CONTRACT_DIR"
@@ -51,4 +58,6 @@ echo "📝 Saved to client/.env.local (NEXT_PUBLIC_TOKEN_WASM_HASH)"
 echo ""
 echo "Next steps:"
 echo "  1. Add PINATA_JWT=<your-jwt> to client/.env.local"
-echo "  2. cd client && bun run dev"
+echo "  2. cd client && bun install && bun run dev"
+echo ""
+echo "Deploy completed at: $(date)"
