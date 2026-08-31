@@ -20,7 +20,7 @@ A full-stack, non-custodial **Stellar** web wallet — generate keys, connect wa
 | | |
 |---|---|
 | 🔗 **Live App** | [a-stro-wallet.vercel.app](https://a-stro-wallet.vercel.app/) |
-| 📜 **Stellar Contract (Testnet)** | [`a521d37e...c33ca85d`](https://stellar.expert/explorer/testnet/contract-wasm/a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d) |
+| 📜 **Stellar Contract (Testnet)** | [`CAJ5XY4W...H2PZJVG`](https://stellar.expert/explorer/testnet/contract/CAJ5XY4W57N7M2IFSDA7Z7TTBRBCNBMFEVM6SEHIGF424CE3UH2PZJVG) |
 | 👨‍💻 **Developed by** | [@vilashturkane](https://github.com/vilashturkane) |
 | 🎬 **Video Demo** | [Google Drive](https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view) |
 
@@ -36,6 +36,7 @@ The `astro-token` contract is a **SEP-41** compatible fungible token built with 
 | **Standard** | SEP-41 (Soroban Token Interface) |
 | **Language** | Rust (`#![no_std]`, compiled to WASM) |
 | **SDK** | `soroban-sdk` v23 |
+| **Contract ID** | [`CAJ5XY4W57N7M2IFSDA7Z7TTBRBCNBMFEVM6SEHIGF424CE3UH2PZJVG`](https://stellar.expert/explorer/testnet/contract/CAJ5XY4W57N7M2IFSDA7Z7TTBRBCNBMFEVM6SEHIGF424CE3UH2PZJVG) |
 | **Testnet WASM Hash** | [`a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d`](https://stellar.expert/explorer/testnet/contract-wasm/a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d) |
 | **Network** | Stellar Testnet (Soroban RPC) |
 | **Instance TTL** | ~90 days (auto-bumped on every interaction) |
