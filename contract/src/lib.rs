@@ -230,16 +230,22 @@ impl AstroToken {
         extend_instance(&env);
     }
 
+    /// Returns the current admin address.
     pub fn admin(env: Env) -> Address {
         read_admin(&env)
     }
 
     // ----- SEP-41 token interface -----
 
+    /// Returns the approved spending allowance for `spender` on behalf of `from`.
+    /// Returns 0 if no allowance exists or if it has already expired.
     pub fn allowance(env: Env, from: Address, spender: Address) -> i128 {
         read_allowance(&env, &from, &spender).amount
     }
 
+    /// Grants `spender` permission to spend up to `amount` from `from`'s balance
+    /// until `expiration_ledger`. Setting `amount` to 0 revokes the allowance.
+    /// Requires `from`'s auth.
     pub fn approve(
         env: Env,
         from: Address,
@@ -257,10 +263,13 @@ impl AstroToken {
         extend_instance(&env);
     }
 
+    /// Returns the token balance of `id`. Returns 0 for unknown addresses.
     pub fn balance(env: Env, id: Address) -> i128 {
         read_balance(&env, &id)
     }
 
+    /// Transfers `amount` tokens from `from` to `to`.
+    /// Requires `from`'s auth. Panics on insufficient balance.
     pub fn transfer(env: Env, from: Address, to: Address, amount: i128) {
         from.require_auth();
         check_nonnegative(amount);
@@ -271,6 +280,8 @@ impl AstroToken {
         extend_instance(&env);
     }
 
+    /// Transfers `amount` tokens from `from` to `to` using a pre-approved allowance.
+    /// Requires `spender`'s auth. Panics if allowance is insufficient.
     pub fn transfer_from(env: Env, spender: Address, from: Address, to: Address, amount: i128) {
         spender.require_auth();
         check_nonnegative(amount);
@@ -282,6 +293,8 @@ impl AstroToken {
         extend_instance(&env);
     }
 
+    /// Permanently destroys `amount` tokens from `from`'s balance,
+    /// reducing total supply. Requires `from`'s auth.
     pub fn burn(env: Env, from: Address, amount: i128) {
         from.require_auth();
         check_nonnegative(amount);
@@ -291,6 +304,8 @@ impl AstroToken {
         extend_instance(&env);
     }
 
+    /// Burns `amount` tokens on behalf of `from` using a pre-approved allowance.
+    /// Requires `spender`'s auth.
     pub fn burn_from(env: Env, spender: Address, from: Address, amount: i128) {
         spender.require_auth();
         check_nonnegative(amount);
@@ -301,14 +316,17 @@ impl AstroToken {
         extend_instance(&env);
     }
 
+    /// Returns the number of decimal places for this token (max 18).
     pub fn decimals(env: Env) -> u32 {
         env.storage().instance().get(&DataKey::Decimals).unwrap()
     }
 
+    /// Returns the human-readable token name (e.g. "Astro Token").
     pub fn name(env: Env) -> String {
         env.storage().instance().get(&DataKey::Name).unwrap()
     }
 
+    /// Returns the token ticker symbol (e.g. "ASTRO").
     pub fn symbol(env: Env) -> String {
         env.storage().instance().get(&DataKey::Symbol).unwrap()
     }
@@ -318,6 +336,7 @@ impl AstroToken {
         env.storage().instance().get(&DataKey::Uri).unwrap()
     }
 
+    /// Returns the current total circulating supply (sum of all balances).
     pub fn total_supply(env: Env) -> i128 {
         read_total_supply(&env)
     }
