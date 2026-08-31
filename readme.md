@@ -1,7 +1,7 @@
 # 🚀 aStroWallet
 
 [![CI/CD Pipeline](https://img.shields.io/github/actions/workflow/status/vilashturkane/aStroWallet/ci.yml?branch=main&label=CI%2FCD%20Pipeline&logo=githubactions&logoColor=white)](https://github.com/vilashturkane/aStroWallet/actions/workflows/ci.yml)
-[![Stellar](https://img.shields.io/badge/Stellar-Soroban%20Smart%20Contracts-7B36D9?logo=stellar&logoColor=white)](https://stellar.org)
+[![Stellar](https://img.shields.io/badge/Stellar-Soroban%20Smart%20Contracts-7B36D9?logo=stellar&logoColor=white)](https://stellar.expert/explorer/testnet/contract-wasm/a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d)
 [![Rust](https://img.shields.io/badge/Rust-soroban--sdk%2023-DEA584?logo=rust&logoColor=black)](contract/src/lib.rs)
 [![Next.js](https://img.shields.io/badge/Next.js-15%20(App%20Router)-black?logo=nextdotjs&logoColor=white)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
@@ -20,7 +20,7 @@ A full-stack, non-custodial **Stellar** web wallet — generate keys, connect wa
 | | |
 |---|---|
 | 🔗 **Live App** | [a-stro-wallet.vercel.app](https://a-stro-wallet.vercel.app/) |
-| 📜 **Testnet WASM Hash** | `a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d` |
+| 📜 **Stellar Contract (Testnet)** | [`a521d37e...c33ca85d`](https://stellar.expert/explorer/testnet/contract-wasm/a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d) |
 | 👨‍💻 **Developed by** | [@vilashturkane](https://github.com/vilashturkane) |
 | 🎬 **Video Demo** | [Google Drive](https://drive.google.com/file/d/17gmQRsMs9ZHhmMpRR5cxEwe4THMiphyE/view) |
 
@@ -36,7 +36,7 @@ The `astro-token` contract is a **SEP-41** compatible fungible token built with 
 | **Standard** | SEP-41 (Soroban Token Interface) |
 | **Language** | Rust (`#![no_std]`, compiled to WASM) |
 | **SDK** | `soroban-sdk` v23 |
-| **Testnet WASM Hash** | `a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d` |
+| **Testnet WASM Hash** | [`a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d`](https://stellar.expert/explorer/testnet/contract-wasm/a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d) |
 | **Network** | Stellar Testnet (Soroban RPC) |
 | **Instance TTL** | ~90 days (auto-bumped on every interaction) |
 
@@ -109,7 +109,7 @@ aStroWallet/
 
 This builds `contract/`, uploads the WASM, and writes `NEXT_PUBLIC_TOKEN_WASM_HASH` into `client/.env.local`.
 
-> ✅ A testnet WASM is already uploaded: `a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d`
+> ✅ A testnet WASM is already uploaded: [`a521d37e...c33ca85d`](https://stellar.expert/explorer/testnet/contract-wasm/a521d37e154dc3a1aa2f5d45755af6813c2d1ab6685c1f312cd954cfc33ca85d)
 
 ### 2. Configure Pinata
 
